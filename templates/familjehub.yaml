@@ -1,0 +1,23 @@
+name: Familjehub
+version: "__VERSION__"
+slug: familjehub
+description: Familjens kalender, SchoolSoft, läxor, fritidstider, mat och Home Assistant i en gemensam vy.
+url: https://github.com/mc-attack/familjehub-addon
+arch:
+  - amd64
+  - aarch64
+image: ghcr.io/mc-attack/familjehub-{arch}
+startup: application
+boot: auto
+watchdog: http://[HOST]:[PORT:8099]/api/health
+ingress: true
+ingress_port: 8099
+panel_icon: mdi:calendar-heart
+panel_title: Familjehub
+homeassistant_api: true
+ports:
+  8099/tcp: null
+ports_description:
+  8099/tcp: Direktåtkomst för väggplattan (valfritt)
+environment:
+  TZ: Europe/Stockholm

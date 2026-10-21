@@ -1,0 +1,48 @@
+name: Publicera till Home Assistant
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Versionsnummer som redan finns på GHCR
+        required: true
+        type: string
+  repository_dispatch:
+    types: [familjehub-release]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: familjehub-addon-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Kontrollera offentliga paket och skapa installationspost
+        env:
+          ADDON_VERSION: ${{ inputs.version || github.event.client_payload.version }}
+          PUBLISH_ADDON: '1'
+          DOCKER_CONFIG: ${{ runner.temp }}/anonymous-docker
+        run: node .github/scripts/publish-addon.mjs
+      - name: Publicera versionsnumret
+        env:
+          ADDON_VERSION: ${{ inputs.version || github.event.client_payload.version }}
+        run: |
+          git add familjehub
+          if git diff --cached --quiet; then
+            echo "Versionen är redan publicerad."
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "Publicera Familjehub $ADDON_VERSION"
+          git push origin HEAD:main
