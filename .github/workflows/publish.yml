@@ -27,9 +27,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Testa publiceringsskydd
+        run: node --test .github/scripts/publish-addon.test.mjs
       - name: Kontrollera offentliga paket och skapa installationspost
         env:
           ADDON_VERSION: ${{ inputs.version || github.event.client_payload.version }}
+          SOURCE_SHA: ${{ github.event.client_payload.source || '' }}
           PUBLISH_ADDON: '1'
           DOCKER_CONFIG: ${{ runner.temp }}/anonymous-docker
         run: node .github/scripts/publish-addon.mjs
