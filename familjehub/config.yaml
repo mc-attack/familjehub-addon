@@ -1,5 +1,5 @@
 name: Familjehub
-version: "0.11.0"
+version: "0.14.2"
 slug: familjehub
 description: Familjens kalender, SchoolSoft, läxor, fritidstider, mat och Home Assistant i en gemensam vy.
 url: https://github.com/mc-attack/familjehub-addon
